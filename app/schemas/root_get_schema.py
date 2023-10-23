@@ -12,7 +12,7 @@ class RegisterCompany(BaseModel):
 
 class PdfRegister(BaseModel):
     target_company_name: str = Field(min_length=3, max_length=55)
-    target_company_cnpj: str
+    target_company_cnpj: str = Field(min_length=14, max_length=15)
     emitter_name: str = Field(min_length=3, max_length=55)
     crc: str = None
     start_time: date
