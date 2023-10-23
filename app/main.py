@@ -1,6 +1,6 @@
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 from schemas.root_get_schema import RegisterCompany, PdfRegister
 from pdf_builder.pdf_builder import build_pdf
 
@@ -17,7 +17,7 @@ app.add_middleware(
 
 @app.post('/', status_code=status.HTTP_200_OK)
 def root(pdf_register: PdfRegister):
-    file_pdf = build_pdf(
+    file_pdf_buffer = build_pdf(
         emitter_cnpj_or_cpf='123456789',
         emitter_crc=pdf_register.crc,
         emitter_name=pdf_register.emitter_name,
@@ -28,10 +28,11 @@ def root(pdf_register: PdfRegister):
         values=pdf_register.values
     )
 
-    return FileResponse(
-        file_pdf,
+    file_pdf_buffer.seek(0)
+
+    return StreamingResponse(
+        content=file_pdf_buffer,
         media_type='application/pdf',
-        filename='output.pdf'
     )
 
 

@@ -5,10 +5,10 @@ from datetime import date
 import pandas as pd
 from babel.numbers import format_currency
 from decimal import Decimal
+from io import BytesIO
 
 path_to_html_src = path.join(path.dirname(__file__), '..', 'html_src')
 path_to_html = path.join(path_to_html_src, 'index.html')
-path_to_output_file = path.join(path.dirname(__file__), '..', 'output.pdf')
 
 html = ''
 css = ''
@@ -48,17 +48,6 @@ def range_month(start: str, end: str):
         "%m/%Y").tolist()
 
 
-def get_values(range_numbers=12):
-    '''
-        Esta função é temporária
-    '''
-    values = []
-    values_default = ['1.000.000.000,50', '2.000.000.000,34']
-    for _ in range(range_numbers):
-        values.append(values_default[0])
-    return values
-
-
 def sumValuesList(list: list[str]):
     newValues = []
 
@@ -94,7 +83,9 @@ def build_pdf(
     end_time: date,
     values: list[str],
     emitter_crc: str = None,
-):
+) -> BytesIO:
+    buffer = BytesIO()
+
     with open(path_to_html, 'r') as html_file:
         html = html_file.read()
 
@@ -122,7 +113,11 @@ def build_pdf(
             month_td.string = month
 
             value_td = soup.new_tag('td')
-            value_td.string = f'R$ {str(values[index])}'
+            value_td.string = format_currency(
+                values[index],
+                'BRL',
+                locale='pt_BR'
+            )
 
             tr.append(month_td)
             tr.append(value_td)
@@ -150,5 +145,5 @@ def build_pdf(
 
     htmlBuilder = HTML(string=html, base_url=path_to_html_src)
 
-    htmlBuilder.write_pdf(path_to_output_file)
-    return path_to_output_file
+    htmlBuilder.write_pdf(buffer)
+    return buffer
