@@ -3,7 +3,7 @@ from os import path
 from bs4 import BeautifulSoup
 from datetime import date
 import pandas as pd
-import locale
+from babel.numbers import format_currency
 from decimal import Decimal
 
 path_to_html_src = path.join(path.dirname(__file__), '..', 'html_src')
@@ -80,8 +80,7 @@ def sumValuesList(list: list[str]):
 
     result_string = sum(newValues)
 
-    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-    result_string = locale.currency(result_string, grouping=True)
+    result_string = format_currency(result_string, 'BRL', locale='pt_BR')
 
     return result_string
 

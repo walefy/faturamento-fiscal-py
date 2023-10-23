@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  pdf_api:
+    build: .
+    networks:
+      - net
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    container_name: pdf_api
+    restart: always
+
+networks:
+  net:
+    driver: bridge
