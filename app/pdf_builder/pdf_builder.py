@@ -6,6 +6,7 @@ import pandas as pd
 from babel.numbers import format_currency
 from decimal import Decimal
 from io import BytesIO
+from utils.format_str_decimal import format_str_to_decimal
 
 path_to_html_src = path.join(path.dirname(__file__), '..', 'html_src')
 path_to_html = path.join(path_to_html_src, 'index.html')
@@ -53,13 +54,8 @@ def sumValuesList(list: list[str]):
 
     for string in list:
         if isinstance(string, str):
-            string = string.replace('R$', '')
-            string = string.replace('.', '')
-            string = string.replace(' ', '')
-            string = string.replace(',', '.')
-
-            numberFloat = Decimal(string)
-            newValues.append(numberFloat)
+            number = format_str_to_decimal(string)
+            newValues.append(number)
         elif isinstance(string, float):
             newValues.append(Decimal(str(string)))
         elif isinstance(string, int):
@@ -114,7 +110,7 @@ def build_pdf(
 
             value_td = soup.new_tag('td')
             value_td.string = format_currency(
-                values[index],
+                format_str_to_decimal(values[index]),
                 'BRL',
                 locale='pt_BR'
             )
