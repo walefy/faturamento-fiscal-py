@@ -6,15 +6,17 @@ readme = "README.md"
 version = "0.1.0"
 
 [tool.isort]
-multi_line_output = 3
+multi_line_output = 3 # Vertical Hanging Indent
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.1.0"
+isort = "^5.12.0"
 
 [tool.poetry.dependencies]
 babel = "^2.13.0"
 beautifulsoup4 = "^4.12.2"
 fastapi = "^0.104.0"
-flake8 = "^6.1.0"
 gunicorn = "^21.2.0"
-isort = "^5.12.0"
 pandas = "^2.1.1"
 python = ">=3.11,<3.13"
 uvicorn = "^0.23.2"
